@@ -1,6 +1,6 @@
 For the BU Games Development Society re-freshers Game Jam.
 
-Requires Java 21 and Gradle 8.6 to build.
+Requires Java 21 to build.
 
 **Building**
 
