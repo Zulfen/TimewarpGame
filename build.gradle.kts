@@ -1,5 +1,7 @@
 plugins {
     id("java")
+    id("application")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
@@ -23,4 +25,19 @@ javafx {
 tasks.test {
     useJUnitPlatform()
 }
+
+application {
+    mainClass.set("com.zulfen.Main")
+}
+
+
+tasks {
+    shadowJar {
+        archiveFileName.set("Timewarp-$version.jar")
+        manifest {
+            attributes["Main-Class"] = application.mainClass
+        }
+    }
+}
+
 
