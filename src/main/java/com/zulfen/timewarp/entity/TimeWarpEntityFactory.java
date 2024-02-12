@@ -10,36 +10,35 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
-import com.sun.prism.paint.Paint;
+import com.zulfen.timewarp.entity.controllers.MonsterComponent;
 import com.zulfen.timewarp.entity.controllers.PlayerComponent;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import static com.almasb.fxgl.dsl.FXGL.*;
+import static com.almasb.fxgl.dsl.FXGL.entityBuilder;
+import static com.almasb.fxgl.dsl.FXGL.getAppCenter;
 
 public class TimeWarpEntityFactory implements EntityFactory {
 
-    private final PhysicsComponent sharedDynamicPhysics = new PhysicsComponent(); {
-        sharedDynamicPhysics.setBodyType(BodyType.DYNAMIC);
+    @Spawns("player")
+    public Entity newPlayer(SpawnData spawnData) {
+        PhysicsComponent physicsComponent = new PhysicsComponent();
+        physicsComponent.setBodyType(BodyType.DYNAMIC);
         FixtureDef fixtureDef = new FixtureDef()
                 .restitution(0.15f)
                 .friction(0.0f);
-        sharedDynamicPhysics.setFixtureDef(fixtureDef);
-    }
-
-    public PhysicsComponent getSharedDynamicPhysics() {
-        return sharedDynamicPhysics;
-    }
-
-    @Spawns("player")
-    public Entity newPlayer(SpawnData spawnData) {
+        physicsComponent.setFixtureDef(fixtureDef);
+        physicsComponent.setOnPhysicsInitialized(() -> {
+            physicsComponent.getBody().setFixedRotation(false);
+            physicsComponent.getBody().setLinearDamping(0.1f);
+        });
         return entityBuilder(spawnData)
                 .at(getAppCenter())
                 .type(TimeWarpEntities.PLAYER)
                 .viewWithBBox("playeridle.png")
                 .anchorFromCenter()
-                .with(sharedDynamicPhysics)
+                .with(physicsComponent)
                 .with(new PlayerComponent())
                 .collidable()
                 .build();
@@ -65,6 +64,28 @@ public class TimeWarpEntityFactory implements EntityFactory {
                 .viewWithBBox(new Rectangle(10, 3, Color.BLUE))
                 .type(TimeWarpEntities.BULLET)
                 .with(projectileComponent)
+                .collidable()
+                .build();
+    }
+
+    @Spawns("monster")
+    public Entity newMonster(SpawnData spawnData) {
+        PhysicsComponent physicsComponent = new PhysicsComponent();
+        physicsComponent.setBodyType(BodyType.DYNAMIC);
+        FixtureDef fixtureDef = new FixtureDef()
+                .restitution(0.15f)
+                .friction(0.0f);
+        physicsComponent.setFixtureDef(fixtureDef);
+        physicsComponent.setOnPhysicsInitialized(() -> {
+                physicsComponent.getBody().setFixedRotation(false);
+                physicsComponent.getBody().setLinearDamping(0.1f);
+        });
+        return entityBuilder(spawnData)
+                .type(TimeWarpEntities.MONSTER)
+                .viewWithBBox("monster.png")
+                .anchorFromCenter()
+                .with(physicsComponent)
+                .with(new MonsterComponent())
                 .collidable()
                 .build();
     }
