@@ -1,6 +1,7 @@
 # For the BU Games Development Society re-freshers Game Jam
 
 Requires Java 21 to build.
+Made in 72 hours...
 
 ## **Building**
 
